@@ -1,14 +1,18 @@
 from .components import Component
 
-from operator import itemgetter
-
 class Entity:
     def __init__(self):
-        self.components: list[Component] = []
+        self.components = set()
 
-    def add_component(self, component: Component):
-        self.components.append(component)
+    def add_component(self, component: Component) -> None:
+        component.parent = self
+        self.components.add(component)
 
-    def remove_component(self, component: Component):
+    def remove_component(self, component: Component) -> None:
         if component in self.components:
             self.components.remove(component)
+
+    def get_component(self, component_type: type) -> Component:
+        for item in self.components:
+            if isinstance(item, component_type):
+                return item

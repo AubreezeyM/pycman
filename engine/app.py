@@ -1,8 +1,9 @@
 import pygame
 import pygame.locals
+from PIL.Image import isImageType
 
 from .entity import Entity
-from .components import SpriteComponent
+from .components import Component, SpriteComponent
 from .systems import RenderSystem
 
 class Application:
@@ -20,13 +21,18 @@ class Application:
 
         pygame.display.set_caption(self.title)
 
+    def create_entity(self, sprite: pygame.Surface) -> Entity:
+        entity = Entity()
+        entity.add_component(SpriteComponent(sprite))
+        self.register_components(entity)
+
+    def register_components(self, entity: Entity) -> None:
+        for component in entity.components:
+            if isinstance(component, SpriteComponent):
+                self.renderer.add(entity)
+
     def run(self) -> None:
         self._RUNNING = True
-        pacman_sprite = pygame.image.load('assets/pacman-right/1.png')
-
-        pacman = Entity()
-        pacman.add_component(SpriteComponent(pacman_sprite))
-        self.renderer.targets.add(pacman.components[0])
 
         while self._RUNNING:
             self._Window.fill((0, 0, 0))
