@@ -19,7 +19,6 @@ class RenderSystem(System):
             self.screen.blit(sprite.sprite, (sprite.x, sprite.y))
 
     def add(self, entity: Entity) -> None:
-        if all(entity.get_component(t) for t in self.entities):
-            self.entities.add(entity)
+        self.entities.add(entity)
 
 

@@ -26,6 +26,7 @@ class Application:
         entity.add_component(SpriteComponent(sprite))
         self.register_components(entity)
 
+    # Potentially not needed.  Will see.
     def register_components(self, entity: Entity) -> None:
         for component in entity.components:
             if isinstance(component, SpriteComponent):
