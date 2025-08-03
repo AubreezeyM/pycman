@@ -1,10 +1,11 @@
 import pygame
 import pygame.locals
 from PIL.Image import isImageType
+from pygame import K_RIGHT
 
 from .entity import Entity
-from .components import Component, SpriteComponent
-from .systems import RenderSystem
+from .components import Component, SpriteComponent, VelocityComponent
+from .systems import RenderSystem, MovementSystem, SystemManager
 
 class Application:
     def __init__(self, title: str, width: int, height: int):
@@ -17,20 +18,18 @@ class Application:
         self.fpsClock = pygame.time.Clock()
         self.font = pygame.font.SysFont('adwaitamono.ttf', 18, bold=True)
 
-        self.renderer = RenderSystem(self._Window)
+        self.system_manager = SystemManager()
+        self.system_manager.add_system(RenderSystem(self._Window))
+        self.system_manager.add_system(MovementSystem())
 
         pygame.display.set_caption(self.title)
 
     def create_entity(self, sprite: pygame.Surface) -> Entity:
         entity = Entity()
         entity.add_component(SpriteComponent(sprite))
-        self.register_components(entity)
-
-    # Potentially not needed.  Will see.
-    def register_components(self, entity: Entity) -> None:
-        for component in entity.components:
-            if isinstance(component, SpriteComponent):
-                self.renderer.add(entity)
+        entity.add_component(VelocityComponent())
+        self.system_manager.add_entity(entity)
+        return entity
 
     def run(self) -> None:
         self._RUNNING = True
@@ -46,7 +45,7 @@ class Application:
                     self._RUNNING = False
 
             self._Window.blit(fps, fps_rect)
-            self.renderer.update()
+            self.system_manager.update()
 
             pygame.display.update()
             self.fpsClock.tick()

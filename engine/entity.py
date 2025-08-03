@@ -3,6 +3,8 @@ from .components import Component
 class Entity:
     def __init__(self):
         self.components = set()
+        self.x_pos: int = 0
+        self.y_pos: int = 0
 
     def add_component(self, component: Component) -> None:
         component.parent = self
