@@ -4,8 +4,9 @@ from PIL.Image import isImageType
 from pygame import K_RIGHT
 
 from .entity import Entity
-from .components import Component, SpriteComponent, VelocityComponent
-from .systems import RenderSystem, MovementSystem, SystemManager
+from .components import Component, SpriteComponent, VelocityComponent, InputComponent
+from .systems import RenderSystem, MovementSystem, SystemManager, InputSystem
+
 
 class Application:
     def __init__(self, title: str, width: int, height: int):
@@ -21,6 +22,7 @@ class Application:
         self.system_manager = SystemManager()
         self.system_manager.add_system(RenderSystem(self._Window))
         self.system_manager.add_system(MovementSystem())
+        self.system_manager.add_system(InputSystem())
 
         pygame.display.set_caption(self.title)
 
@@ -28,6 +30,7 @@ class Application:
         entity = Entity()
         entity.add_component(SpriteComponent(sprite))
         entity.add_component(VelocityComponent())
+        entity.add_component(InputComponent())
         self.system_manager.add_entity(entity)
         return entity
 
