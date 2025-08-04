@@ -14,7 +14,17 @@ class System(abc.ABC):
     def track_component(cls, component_type: type(Component)) -> None:
         cls._tracked_components.add(component_type)
 
+
+def _entity_qualifies(system: System, entity: Entity) -> bool:
+    return all(
+        entity.get_component(comp_type)
+        for comp_type in getattr(system, "_tracked_components", set())
+    )
+
+
 class SystemManager:
+    """Here mostly to manange automatic component registration
+       and updating all systems at once."""
     def __init__(self):
         self._systems: list[System] = []
         self._entity_cache: dict[type[System], set[Entity]] = {}
@@ -25,9 +35,9 @@ class SystemManager:
 
     def add_entity(self, entity: Entity) -> None:
         for system in self._systems:
-            if self._entity_qualifies(system, entity):
+            if _entity_qualifies(system, entity):
                 self._entity_cache[type(system)].add(entity)
-                system.add(entity)  # Optional: Notify system directly
+                system.add(entity) 
 
     def remove_entity(self, entity: Entity) -> None:
         for system_type, entities in self._entity_cache.items():
@@ -37,12 +47,6 @@ class SystemManager:
     def update(self) -> None:
         for system in self._systems:
             system.update()
-
-    def _entity_qualifies(self, system: System, entity: Entity) -> bool:
-        return all(
-            entity.get_component(comp_type)
-            for comp_type in getattr(system, "_tracked_components", set())
-        )
 
 
 class RenderSystem(System):
@@ -95,6 +99,9 @@ class InputSystem(System):
                 velocity.vy = -1
             elif keys[pygame.K_DOWN]:
                 velocity.vy = 1
+            else:
+                velocity.vx = 0
+                velocity.vy = 0
 
     def add(self, entity: Entity) -> None:
         if entity.get_component(InputComponent):

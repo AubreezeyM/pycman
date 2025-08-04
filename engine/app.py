@@ -1,10 +1,9 @@
 import pygame
 import pygame.locals
-from PIL.Image import isImageType
-from pygame import K_RIGHT
+from pygame.locals import *
 
 from .entity import Entity
-from .components import Component, SpriteComponent, VelocityComponent, InputComponent
+from .components import SpriteComponent, VelocityComponent, InputComponent
 from .systems import RenderSystem, MovementSystem, SystemManager, InputSystem
 
 

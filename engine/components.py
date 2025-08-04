@@ -26,6 +26,6 @@ class VelocityComponent(Component):
         self.vy: int = 0
 
 class InputComponent(Component):
-    # Only here to mark input components for now.  Might add stuff here later.
+    # Only here to mark player input components for now.  Might add stuff here later.
     pass
 
