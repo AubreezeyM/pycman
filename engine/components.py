@@ -1,9 +1,6 @@
-from dataclasses import dataclass
-
 import abc
 import pygame
 
-@dataclass
 class Component:
     def __init__(self):
         self._id: int = id(self)
